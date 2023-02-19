@@ -1,17 +1,17 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class MY_Model extends CI_Model 
+class MY_Model extends CI_Model
 {
 
-	protected $table	= '';
-	protected $perPage	= 5;
+	protected $table = '';
+	protected $perPage = 5;
 
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		if (!$this->table) {
 			$this->table = strtolower(
 				str_replace('_model', '', get_class($this))
@@ -31,7 +31,8 @@ class MY_Model extends CI_Model
 		$this->load->library('form_validation');
 
 		$this->form_validation->set_error_delimiters(
-			'<small class="form-text text-danger">', '</small>'
+			'<small class="form-text text-danger">',
+			'</small>'
 		);
 		$validationRules = $this->getValidationRules();
 
@@ -171,7 +172,7 @@ class MY_Model extends CI_Model
 	{
 		return $this->db->update($this->table, $data);
 	}
-	
+
 	/**
 	 * Menghapus suatu data dari hasil query dan kondisi
 	 * 
@@ -229,36 +230,90 @@ class MY_Model extends CI_Model
 		$this->load->library('pagination');
 
 		$config = [
-			'base_url'			=> $baseUrl,
-			'uri_segment'		=> $uriSegment,
-			'per_page'			=> $this->perPage,
-			'total_rows'		=> $totalRows,
-			'use_page_numbers'	=> true,
-			
-			'full_tag_open'		=> '<ul class="pagination">',
-			'full_tag_close'	=> '</ul>',
-			'attributes'		=> ['class' => 'page-link'],
-			'first_link'		=> false,
-			'last_link'			=> false,
-			'first_tag_open'	=> '<li class="page-item">',
-			'first_tag_close'	=> '</li>',
-			'prev_link'			=> '&laquo',
-			'prev_tag_open'		=> '<li class="page-item">',
-			'prev_tag_close'	=> '</li>',
-			'next_link'			=> '&raquo',
-			'next_tag_open'		=> '<li class="page-item">',
-			'next_tag_close'	=> '</li>',
-			'last_tag_open'		=> '<li class="page-item">',
-			'last_tag_close'	=> '</li>',
-			'cur_tag_open'		=> '<li class="page-item active"><a href="#" class="page-link">',
-			'cur_tag_close'		=> '<span class="sr-only">(current)</span></a></li>',
-			'num_tag_open'		=> '<li class="page-item">',
-			'num_tag_close'		=> '</li>',
+			'base_url' => $baseUrl,
+			'uri_segment' => $uriSegment,
+			'per_page' => $this->perPage,
+			'total_rows' => $totalRows,
+			'use_page_numbers' => true,
+
+			'full_tag_open' => '<ul class="pagination">',
+			'full_tag_close' => '</ul>',
+			'attributes' => ['class' => 'page-link'],
+			'first_link' => false,
+			'last_link' => false,
+			'first_tag_open' => '<li class="page-item">',
+			'first_tag_close' => '</li>',
+			'prev_link' => '&laquo',
+			'prev_tag_open' => '<li class="page-item">',
+			'prev_tag_close' => '</li>',
+			'next_link' => '&raquo',
+			'next_tag_open' => '<li class="page-item">',
+			'next_tag_close' => '</li>',
+			'last_tag_open' => '<li class="page-item">',
+			'last_tag_close' => '</li>',
+			'cur_tag_open' => '<li class="page-item active"><a href="#" class="page-link">',
+			'cur_tag_close' => '<span class="sr-only">(current)</span></a></li>',
+			'num_tag_open' => '<li class="page-item">',
+			'num_tag_close' => '</li>',
 		];
 
 		$this->pagination->initialize($config);
 		return $this->pagination->create_links();
 	}
+
+	public function relatedProduct($categoryId = [])
+	{
+		$this->db->select([
+			'product.id',
+			'product.title AS product_title',
+			'product.description',
+			'product.image',
+			'product.price',
+			'product.is_available',
+			'category.title AS category_title',
+			'category.slug AS category_slug',
+			'product.size'
+		]);
+		$this->db->from('product');
+		$this->db->join('category', 'product.id_category = category.id');
+		$this->db->where('product.is_available', 1);
+		$this->db->where_in('category.id', $categoryId);
+		$products = $this->db->get()->result();
+
+		return $products;
+	}
+
+	public function recomProduct($categoryId = [])
+	{
+		$this->db->select([
+			'product.id',
+			'product.title AS product_title',
+			'product.description',
+			'product.image',
+			'product.price',
+			'product.is_available',
+			'category.title AS category_title',
+			'category.slug AS category_slug',
+			'product.size'
+		]);
+		$this->db->from('product');
+		$this->db->join('category', 'product.id_category = category.id');
+		$this->db->where('product.is_available', 1);
+		$this->db->where_in('product.size', ['1', '0']);
+		$this->db->where_in('category.id', $categoryId);
+		$products = $this->db->get()->result();
+
+		// Hapus produk yang harganya lebih mahal daripada produk utama
+		(int) $main_product_price = $products[0]->price;
+		foreach ($products as $key => $product) {
+			if ((int) $product->price > $main_product_price) {
+				unset($products[$key]);
+			}
+		}
+
+		return $products;
+	}
+
 }
 
 /* End of file MY_Model.php */

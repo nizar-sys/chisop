@@ -41,6 +41,18 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="">Ukuran</label>
+							<br>
+							<div class="form-check form-check-inline">
+								<?= form_radio(['name' => 'size', 'value' => 1, 'checked' => $input->size == 1 ? true : false, 'form-check-input']) ?>
+								<label for="" class="form-check-label">Besar</label>
+							</div>
+							<div class="form-check form-check-inline">
+							<?= form_radio(['name' => 'size', 'value' => 0, 'checked' => $input->size == 0 ? true : false, 'form-check-input']) ?>
+								<label for="" class="form-check-label">Kecil</label>
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="">Gambar</label>
 							<br>
 							<?= form_upload('image') ?>

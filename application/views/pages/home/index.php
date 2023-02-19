@@ -25,6 +25,7 @@
 							<p class="card-text"><strong>Rp<?= number_format($row->price, 0, ',', '.') ?>,-</strong></p>
 							<p class="card-text"><?= $row->description ?></p>
 							<a href="<?= base_url("/shop/category/$row->category_slug") ?>" class="badge badge-primary"><i class="fas fa-tags"></i> <?= $row->category_title ?></a>
+							<div class="badge badge-secondary"><i class="fas fa-tags"></i><?= $row->size ? 'Besar' : 'Kecil' ?></div>
 						</div>
 						<div class="card-footer">
 							<form action="<?= base_url("/cart/add") ?>" method="POST">

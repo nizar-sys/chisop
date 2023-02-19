@@ -13,7 +13,8 @@ class Shop extends MY_Controller
 					'product.id', 'product.title AS product_title', 
 					'product.description', 'product.image', 
 					'product.price', 'product.is_available',
-					'category.title AS category_title', 'category.slug AS category_slug'
+					'category.title AS category_title', 'category.slug AS category_slug',
+					'product.size'
 				]
 			)
 			->join('category')
@@ -38,7 +39,8 @@ class Shop extends MY_Controller
 					'product.id', 'product.title AS product_title', 
 					'product.description', 'product.image', 
 					'product.price', 'product.is_available',
-					'category.title AS category_title', 'category.slug AS category_slug'
+					'category.title AS category_title', 'category.slug AS category_slug',
+					'product.size'
 				]
 			)
 			->join('category')
@@ -71,7 +73,8 @@ class Shop extends MY_Controller
 					'product.id', 'product.title AS product_title', 
 					'product.description', 'product.image', 
 					'product.price', 'product.is_available',
-					'category.title AS category_title', 'category.slug AS category_slug'
+					'category.title AS category_title', 'category.slug AS category_slug',
+					'product.size'
 				]
 			)
 			->join('category')

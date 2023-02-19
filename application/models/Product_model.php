@@ -16,7 +16,8 @@ class Product_model extends MY_Model
 			'description'	=> '',
 			'price'			=> '',
 			'is_available'	=> 1,
-			'image'			=> ''
+			'image'			=> '',
+			'size' => ''
 		];
 	}
 
@@ -53,6 +54,11 @@ class Product_model extends MY_Model
 				'label'	=> 'Ketersediaan',
 				'rules'	=> 'required'
 			],
+			[
+				'field'	=> 'size',
+				'label'	=> 'Ukuran',
+				'rules'	=> 'required'
+			],
 		];
 
 		return $validationRules;
@@ -83,7 +89,7 @@ class Product_model extends MY_Model
 
 	public function deleteImage($fileName)
 	{
-		if (file_exists("./images/product/$fileName")) {
+		if (file_exists("./images/product/$fileName") && $fileName != 'default.png') {
 			unlink("./images/product/$fileName");
 		}
 	}

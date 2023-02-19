@@ -23,7 +23,8 @@ class Product extends MY_Controller
 				[
 					'product.id', 'product.title AS product_title', 'product.image', 
 					'product.price', 'product.is_available',
-					'category.title AS category_title'
+					'category.title AS category_title',
+					'product.size',
 				]
 			)
 			->join('category')
@@ -52,7 +53,8 @@ class Product extends MY_Controller
 				[
 					'product.id', 'product.title AS product_title', 'product.image', 
 					'product.price', 'product.is_available',
-					'category.title AS category_title'
+					'category.title AS category_title',
+					'product.size',
 				]
 			)
 			->join('category')
