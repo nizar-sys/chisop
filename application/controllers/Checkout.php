@@ -25,7 +25,8 @@ class Checkout extends MY_Controller
 
 		$data['cart']	= $this->checkout->select([
 				'cart.id', 'cart.qty', 'cart.subtotal',
-				'product.title', 'product.image', 'product.price'
+				'product.title', 'product.image', 'product.price',
+				'product.size'
 			])
 			->join('product')
 			->where('cart.id_user', $this->id)

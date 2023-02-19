@@ -13,21 +13,42 @@ class Cart extends MY_Controller {
 		$this->id	= $this->session->userdata('id');
 
 		if (! $is_login) {
+			$this->session->set_flashdata('error', 'Anda harus login terlebih dulu.');
 			redirect(base_url());
 			return;
 		}
 	}
 
-	public function index()
+	public function index($page = null)
 	{
 		$data['title']		= 'Keranjang Belanja';
 		$data['content']	= $this->cart->select([
 				'cart.id', 'cart.qty', 'cart.subtotal',
-				'product.title', 'product.image', 'product.price'
+				'product.title', 'product.image', 'product.price',
+				'product.size'
 			])
 			->join('product')
 			->where('cart.id_user', $this->id)
 			->get();
+					
+			
+		$queryCategoryId = $this->cart->select([
+			'product.id_category'
+		])
+		->join('product')
+		->where('cart.id_user', $this->id)
+		->get();
+		
+		$categoryIds = [];
+		foreach($queryCategoryId as $key => $categoryId){
+			$categoryIds[] = $categoryId->id_category;
+		}
+		
+		if(!empty($categoryIds)){
+			$data['related_product'] = $this->cart->relatedProduct($categoryIds);
+			$data['recom_product'] = $this->cart->recomProduct($categoryIds);
+		}
+		
 		$data['page']		= 'pages/cart/index';
 
 		return $this->view($data);
